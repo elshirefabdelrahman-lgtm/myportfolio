@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Abdelrahman Elsherif — AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090f;
+    --surface: #0e1117;
+    --surface2: #13171f;
+    --border: #1e2433;
+    --accent: #00d4ff;
+    --accent2: #7b61ff;
+    --accent3: #00ffa3;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --card-bg: #0d1117;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── GLOWING BLOBS ── */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.12;
+  }
+  .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; }
+  .blob-2 { width: 500px; height: 500px; background: var(--accent2); bottom: -150px; right: -100px; }
+  .blob-3 { width: 300px; height: 300px; background: var(--accent3); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(7,9,15,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.1s forwards;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+
+  .hero-name .line2 {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0,212,255,0.4);
+  }
+
+  .hero-tagline {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--muted);
+    max-width: 560px;
+    margin-bottom: 48px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+  }
+
+  .hero-tagline strong { color: var(--text); font-weight: 500; }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.5s forwards;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #07090f;
+  }
+  .btn-primary:hover {
+    background: #33ddff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,212,255,0.3);
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── SECTION HEADER ── */
+  .sec-header {
+    margin-bottom: 56px;
+    padding-top: 100px;
+  }
+
+  .sec-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .sec-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .sec-title span {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--muted);
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+    font-weight: 300;
+  }
+
+  .about-text p strong { color: var(--text); font-weight: 500; }
+
+  .about-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .highlight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .highlight-card:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .hl-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .hl-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  .hl-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* ── PROJECTS ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .project-card:hover {
+    border-color: rgba(0,212,255,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .project-icon {
+    font-size: 1.8rem;
+  }
+
+  .project-type {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .type-realtime { color: var(--accent); border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.05); }
+  .type-ai { color: var(--accent2); border-color: rgba(123,97,255,0.3); background: rgba(123,97,255,0.05); }
+  .type-embedded { color: var(--accent3); border-color: rgba(0,255,163,0.3); background: rgba(0,255,163,0.05); }
+  .type-ml { color: #ff9f43; border-color: rgba(255,159,67,0.3); background: rgba(255,159,67,0.05); }
+
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tech-tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: auto;
+    transition: gap 0.2s;
+  }
+  .project-link:hover { gap: 10px; }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .skill-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.2s;
+  }
+
+  .skill-group:hover { border-color: rgba(0,212,255,0.2); }
+
+  .skill-group-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .skill-group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .skill-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+
+  .skill-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .skill-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent3);
+    flex-shrink: 0;
+  }
+
+  /* ── EXPERIENCE ── */
+  .experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .exp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+
+  .exp-card:hover { border-color: rgba(0,212,255,0.2); }
+
+  .exp-year-block {
+    text-align: center;
+    padding-top: 4px;
+  }
+
+  .exp-year {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .exp-dot {
+    width: 2px;
+    background: var(--border);
+    height: 100%;
+    margin: 8px auto 0;
+  }
+
+  .exp-company {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .exp-role {
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .exp-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .exp-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--accent);
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  /* ── LINKS / CONNECT ── */
+  .connect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 16px;
+  }
+
+  .connect-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.25s;
+  }
+
+  .connect-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,212,255,0.1);
+  }
+
+  .connect-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .ci-linkedin { background: rgba(0,119,181,0.15); }
+  .ci-github   { background: rgba(255,255,255,0.05); }
+  .ci-kaggle   { background: rgba(32,190,232,0.1); }
+  .ci-email    { background: rgba(0,212,255,0.08); }
+
+  .connect-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .connect-handle {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 100px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 0 20px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 28px; flex-wrap: wrap; }
+    .exp-card { grid-template-columns: 1fr; gap: 12px; }
+    .exp-year-block { display: flex; gap: 12px; align-items: center; }
+    .exp-dot { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">AE<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#connect">Connect</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">AI Engineer · Computer Vision · Automotive AI</div>
+  <h1 class="hero-name">
+    Abdelrahman
+    <span class="line2">Elsherif</span>
+  </h1>
+  <p class="hero-tagline">
+    Building <strong>real-world AI systems</strong> — from real-time driver monitoring to embedded smart vehicles. I close the gap between machine learning models and the physical systems that run them.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects ↓</a>
+    <a href="mailto:elshirefabdelrahman@gmail.com" class="btn btn-ghost">Get In Touch</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <span class="stat-num">11+</span>
+      <span class="stat-label">AI Projects</span>
+    </div>
+    <div>
+      <span class="stat-num">3</span>
+      <span class="stat-label">AI Domains</span>
+    </div>
+    <div>
+      <span class="stat-num">2</span>
+      <span class="stat-label">Internships</span>
+    </div>
+    <div>
+      <span class="stat-num">2025</span>
+      <span class="stat-label">BSc Graduate</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-header reveal">
+    <div class="sec-label">01 — Who I Am</div>
+    <h2 class="sec-title">Engineering AI <span>that moves</span></h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm an <strong>AI Engineer</strong> specializing in Computer Vision, Deep Learning, NLP, and Automotive AI systems — with a strong focus on shipping real products, not just research. I graduated from Pharos University Alexandria in 2025 with a Bachelor's in Computer Science (AI specialization) and hold an Advanced AI Diploma in AI & Machine Learning.</p>
+      <p>My work lives at the intersection of <strong>intelligence and hardware</strong>. I build systems that see, reason, and react in real time — from ADAS pipelines to embedded driver safety platforms deployed on Arduino, Raspberry Pi, and ESP32.</p>
+      <p>I've completed internships in Robotics & IoT (STSmart) and Embedded Systems & Real-time Applications (ZAtech), and I communicate fluently in English — essential for global teams and technical documentation.</p>
+    </div>
+    <div class="about-highlights reveal">
+      <div class="highlight-card">
+        <div class="hl-icon">🚗</div>
+        <div>
+          <div class="hl-title">Automotive AI</div>
+          <div class="hl-desc">ADAS, YOLO-based detection, lane tracking, and driver monitoring systems built for real-time performance.</div>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon">🧠</div>
+        <div>
+          <div class="hl-title">Deep Learning & CV</div>
+          <div class="hl-desc">TensorFlow, PyTorch, YOLO, and OpenCV pipelines from data to deployment — across vision and audio domains.</div>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon">⚙️</div>
+        <div>
+          <div class="hl-title">Embedded & IoT</div>
+          <div class="hl-desc">AI integrated with Arduino, Raspberry Pi, and ESP32 for physical, real-world deployable systems.</div>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <div class="hl-icon">🛠️</div>
+        <div>
+          <div class="hl-title">Full-Stack AI Products</div>
+          <div class="hl-desc">From mobile apps (Flutter) to web interfaces and biometric access systems — end-to-end builders mindset.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="sec-header reveal">
+    <div class="sec-label">02 — What I've Built</div>
+    <h2 class="sec-title">AI Systems <span>in the Wild</span></h2>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🛣️</div>
+        <span class="project-type type-realtime">Real-Time</span>
+      </div>
+      <div class="project-title">ADAS — Advanced Driver Assistance System</div>
+      <div class="project-desc">Real-time lane detection and vehicle tracking pipeline with distance estimation, designed to power on-vehicle safety systems. Processes live camera feeds at low latency using YOLO and OpenCV.</div>
+      <div class="project-tech">
+        <span class="tech-tag">YOLO</span>
+        <span class="tech-tag">OpenCV</span>
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">Computer Vision</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">👁️</div>
+        <span class="project-type type-ai">AI</span>
+      </div>
+      <div class="project-title">Driver Monitoring System</div>
+      <div class="project-desc">Production-grade drowsiness and distraction detection system using real-time facial landmark analysis and deep learning classifiers. Designed to alert drivers before accidents occur.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Deep Learning</span>
+        <span class="tech-tag">OpenCV</span>
+        <span class="tech-tag">Computer Vision</span>
+        <span class="tech-tag">Python</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🚘</div>
+        <span class="project-type type-embedded">Embedded</span>
+      </div>
+      <div class="project-title">Fully Autonomous Smart Car</div>
+      <div class="project-desc">End-to-end intelligent vehicle prototype integrating drowsiness detection, auto-parking with ultrasonic sensors, and anomalous sound classification. Three ML subsystems running concurrently on embedded hardware.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Arduino</span>
+        <span class="tech-tag">IoT</span>
+        <span class="tech-tag">CV</span>
+        <span class="tech-tag">ML</span>
+        <span class="tech-tag">Audio ML</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🔊</div>
+        <span class="project-type type-ml">ML</span>
+      </div>
+      <div class="project-title">Car Fault Detection via Audio (GMM)</div>
+      <div class="project-desc">Acoustic anomaly detection system for engine diagnostics. Extracts MFCC and spectral features from audio signals using Librosa, then classifies fault conditions using Gaussian Mixture Models — no invasive hardware needed.</div>
+      <div class="project-tech">
+        <span class="tech-tag">GMM</span>
+        <span class="tech-tag">Librosa</span>
+        <span class="tech-tag">Signal Processing</span>
+        <span class="tech-tag">Scikit-learn</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">⛽</div>
+        <span class="project-type type-ai">AI</span>
+      </div>
+      <div class="project-title">Fuel Consumption Predictor (LSTM)</div>
+      <div class="project-desc">Time-series deep learning model that predicts vehicle fuel efficiency using LSTM networks. Processes sequential driving data to surface optimization insights for automotive engineers and fleet operators.</div>
+      <div class="project-tech">
+        <span class="tech-tag">LSTM</span>
+        <span class="tech-tag">TensorFlow</span>
+        <span class="tech-tag">Keras</span>
+        <span class="tech-tag">Time Series</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🖐️</div>
+        <span class="project-type type-embedded">Embedded</span>
+      </div>
+      <div class="project-title">Biometric Access Control System</div>
+      <div class="project-desc">Multi-factor biometric security system combining fingerprint scanning with real-time face recognition. Deployed on Raspberry Pi for physical access control — suitable for secure facility entry.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Raspberry Pi</span>
+        <span class="tech-tag">OpenCV</span>
+        <span class="tech-tag">Face Recognition</span>
+        <span class="tech-tag">Python</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🥽</div>
+        <span class="project-type type-ai">AI + AR</span>
+      </div>
+      <div class="project-title">Car Magazine 3D / AR Viewer</div>
+      <div class="project-desc">Scan a car image and instantly launch an interactive 3D or VR experience. Built in Unity with C# — bridges physical print media and immersive digital content for automotive marketing.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Unity</span>
+        <span class="tech-tag">C#</span>
+        <span class="tech-tag">AR</span>
+        <span class="tech-tag">3D</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">📱</div>
+        <span class="project-type type-embedded">Embedded</span>
+      </div>
+      <div class="project-title">Bluetooth Smart Car + Mobile App</div>
+      <div class="project-desc">Full-stack embedded project: Arduino-powered vehicle with custom Flutter mobile app for Bluetooth remote control. Clean interface, live telemetry feedback, and modular motor control architecture.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Arduino</span>
+        <span class="tech-tag">Flutter</span>
+        <span class="tech-tag">Bluetooth</span>
+        <span class="tech-tag">Dart</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🏥</div>
+        <span class="project-type type-ml">Full-Stack</span>
+      </div>
+      <div class="project-title">Doctor Reservation Platform</div>
+      <div class="project-desc">Multi-role web application for managing medical appointment booking across patients, doctors, and admins. Handles scheduling, conflict resolution, and user authentication with persistent database storage.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Java</span>
+        <span class="tech-tag">MySQL</span>
+        <span class="tech-tag">Backend</span>
+      </div>
+      <a href="https://github.com/elshirefabdelrahman-lgtm" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="sec-header reveal">
+    <div class="sec-label">03 — Technical Arsenal</div>
+    <h2 class="sec-title">Skills & <span>Technologies</span></h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <div class="skill-group-title">AI & Machine Learning</div>
+      <div class="skill-items">
+        <div class="skill-item"><span class="dot"></span>TensorFlow</div>
+        <div class="skill-item"><span class="dot"></span>PyTorch</div>
+        <div class="skill-item"><span class="dot"></span>Keras</div>
+        <div class="skill-item"><span class="dot"></span>YOLO</div>
+        <div class="skill-item"><span class="dot"></span>OpenCV</div>
+        <div class="skill-item"><span class="dot"></span>Scikit-learn</div>
+        <div class="skill-item"><span class="dot"></span>LSTM / RNN</div>
+        <div class="skill-item"><span class="dot"></span>GMM</div>
+        <div class="skill-item"><span class="dot"></span>Computer Vision</div>
+        <div class="skill-item"><span class="dot"></span>NLP</div>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Programming Languages</div>
+      <div class="skill-items">
+        <div class="skill-item"><span class="dot"></span>Python</div>
+        <div class="skill-item"><span class="dot"></span>C++</div>
+        <div class="skill-item"><span class="dot"></span>Java</div>
+        <div class="skill-item"><span class="dot"></span>JavaScript</div>
+        <div class="skill-item"><span class="dot"></span>C# (Unity)</div>
+        <div class="skill-item"><span class="dot"></span>Dart (Flutter)</div>
+        <div class="skill-item"><span class="dot"></span>HTML / CSS</div>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Embedded & IoT Systems</div>
+      <div class="skill-items">
+        <div class="skill-item"><span class="dot"></span>Arduino</div>
+        <div class="skill-item"><span class="dot"></span>Raspberry Pi</div>
+        <div class="skill-item"><span class="dot"></span>ESP32</div>
+        <div class="skill-item"><span class="dot"></span>IoT Protocols</div>
+        <div class="skill-item"><span class="dot"></span>Sensor Integration</div>
+        <div class="skill-item"><span class="dot"></span>Real-Time Systems</div>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Tools & Platforms</div>
+      <div class="skill-items">
+        <div class="skill-item"><span class="dot"></span>Git / GitHub</div>
+        <div class="skill-item"><span class="dot"></span>VS Code</div>
+        <div class="skill-item"><span class="dot"></span>MySQL</div>
+        <div class="skill-item"><span class="dot"></span>Firebase</div>
+        <div class="skill-item"><span class="dot"></span>Flutter</div>
+        <div class="skill-item"><span class="dot"></span>Unity</div>
+        <div class="skill-item"><span class="dot"></span>Librosa</div>
+        <div class="skill-item"><span class="dot"></span>Kaggle</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="sec-header reveal">
+    <div class="sec-label">04 — Experience</div>
+    <h2 class="sec-title">Where I've <span>Worked</span></h2>
+  </div>
+  <div class="experience-list">
+
+    <div class="exp-card reveal">
+      <div class="exp-year-block">
+        <div class="exp-year">Internship</div>
+      </div>
+      <div>
+        <div class="exp-company">STSmart <span class="exp-badge">Robotics & IoT</span></div>
+        <div class="exp-role">Robotics & IoT Engineering Intern</div>
+        <div class="exp-desc">Worked on robotics systems and IoT integration — gaining hands-on experience with hardware-software interfacing, sensor networks, and automated control systems in a professional engineering environment.</div>
+      </div>
+    </div>
+
+    <div class="exp-card reveal">
+      <div class="exp-year-block">
+        <div class="exp-year">Internship</div>
+      </div>
+      <div>
+        <div class="exp-company">ZAtech <span class="exp-badge">Embedded Systems</span></div>
+        <div class="exp-role">Embedded Systems & Real-Time Applications Intern</div>
+        <div class="exp-desc">Developed and tested embedded software for real-time applications. Worked directly with microcontrollers and real-time operating constraints — strengthening skills in low-level programming and system reliability.</div>
+      </div>
+    </div>
+
+    <div class="exp-card reveal">
+      <div class="exp-year-block">
+        <div class="exp-year">2021–2025</div>
+      </div>
+      <div>
+        <div class="exp-company">Pharos University Alexandria <span class="exp-badge">BSc</span></div>
+        <div class="exp-role">Bachelor of Computer Science — AI Specialization</div>
+        <div class="exp-desc">Faculty of Computers and Artificial Intelligence. Specialized in AI systems, completing a capstone portfolio of 11+ real-world AI projects spanning computer vision, deep learning, NLP, and embedded systems. Also holds an Advanced AI & Machine Learning Diploma.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section id="connect">
+  <div class="sec-header reveal">
+    <div class="sec-label">05 — Let's Connect</div>
+    <h2 class="sec-title">Find Me <span>Online</span></h2>
+  </div>
+  <div class="connect-grid">
+    <a href="https://www.linkedin.com/in/abdelrahman-elsherif-944a52337" target="_blank" class="connect-card reveal">
+      <div class="connect-icon ci-linkedin">💼</div>
+      <div>
+        <div class="connect-label">LinkedIn</div>
+        <div class="connect-handle">Abdelrahman Elsherif</div>
+      </div>
+    </a>
+    <a href="https://github.com/elshirefabdelrahman-lgtm" target="_blank" class="connect-card reveal">
+      <div class="connect-icon ci-github">💻</div>
+      <div>
+        <div class="connect-label">GitHub</div>
+        <div class="connect-handle">elshirefabdelrahman</div>
+      </div>
+    </a>
+    <a href="https://www.kaggle.com/abdelrahmanelsheriif" target="_blank" class="connect-card reveal">
+      <div class="connect-icon ci-kaggle">📊</div>
+      <div>
+        <div class="connect-label">Kaggle</div>
+        <div class="connect-handle">abdelrahmanelsheriif</div>
+      </div>
+    </a>
+    <a href="mailto:elshirefabdelrahman@gmail.com" class="connect-card reveal">
+      <div class="connect-icon ci-email">📧</div>
+      <div>
+        <div class="connect-label">Email</div>
+        <div class="connect-handle">elshirefabdelrahman</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>Designed & built by <span>Abdelrahman Elsherif</span> · AI Engineer · Alexandria, Egypt</p>
+  <p style="margin-top:8px; font-size:0.78rem;">Open to internships and entry-level AI/ML roles globally.</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
